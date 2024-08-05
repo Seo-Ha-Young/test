@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Page</title>
+</head>
+<body>
+<h1>성경 구절 검색</h1>
+<form method="post" action="/">
+    <label for="query">구절 입력 (예: 마 5, 마 5:2):</label>
+    <input type="text" id="query" name="query">
+    <button type="submit">검색</button>
+</form>
+<div>
+    <h2>결과:</h2>
+    <pre th:text="${result}"></pre>
+</div>
+</body>
+</html>

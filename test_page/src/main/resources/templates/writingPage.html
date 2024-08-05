@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>성경 필사 페이지</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <div class="left-pane">
+        <h2>성경 구절</h2>
+        <p th:text="${verse}"></p>
+    </div>
+    <div class="right-pane">
+        <h2>필사하기</h2>
+        <textarea id="transcription" placeholder="여기에 구절을 따라 적으세요."></textarea>
+    </div>
+</div>
+<script src="/js/script.js"></script>
+</body>
+</html>
