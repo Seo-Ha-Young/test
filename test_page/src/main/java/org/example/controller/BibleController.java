@@ -2,6 +2,7 @@ package org.example.controller;
 
 import lombok.extern.log4j.Log4j2;
 
+import org.example.service.BibleBookMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,9 +13,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+
 @Log4j2
 @Controller
 public class BibleController {
+
+    public String displayBibleUrl(String bookName) {
+        log.info("bookname = "+bookName);
+        // 입력된 책 이름을 통해 URL을 가져옵니다.
+        String bibleUrl = BibleBookMapper.getBibleUrl(bookName);
+
+        log.info("bibleurl : "+bibleUrl);
+        if (!bibleUrl.isEmpty()) {
+            System.out.println("해당 성경 구절의 URL: " + bibleUrl);
+        } else {
+            System.out.println("유효하지 않은 성경 책 이름입니다.");
+        }
+
+        return bibleUrl;
+    }
 
     @GetMapping("/")
     public String index() {
@@ -23,7 +40,11 @@ public class BibleController {
 
     @PostMapping("/")
     public String getBibleVerse(@RequestParam("query") String query, Model model) {
+        String[] name = query.split(" ");
+        String name2 = name[0];
+        log.info("name2 : "+name2);
         log.info("query:"+query);
+        log.info("url:"+displayBibleUrl(name2));
         String result = fetchBibleVerse(query);
         log.info("result:"+result);
         model.addAttribute("result", result);
@@ -32,10 +53,16 @@ public class BibleController {
     }
 
     private String fetchBibleVerse(String query) {
-        String baseUrl = "http://ibibles.net/quote.php?kor-mat/";
 
-        if (query.startsWith("마 ")) {
-            query = query.substring(2); // '마 ' 제거
+        String[] name = query.split(" "); //'각 권 명칭' "장 : 절" 분리
+        String name2 = name[0]; // 권 명칭 사용
+
+        String baseUrl = displayBibleUrl(name2);
+
+        query = name[1]; // 분리한 뒷부분 사용
+
+        log.info("baseUrl? = "+baseUrl);
+        log.info("query? = " + query);
 
             String url;
             if (query.contains(":")) {
@@ -55,9 +82,7 @@ public class BibleController {
                 log.error("Error fetching Bible verse", e);
                 return "성경 구절을 찾을 수 없습니다.";
             }
-        } else {
-            return "유효한 입력이 아닙니다. '마'로 시작하는 구절을 입력하세요.";
-        }
+
     }
 
     private String parseBibleVerse(String html) {
@@ -70,6 +95,17 @@ public class BibleController {
         for (Element element : body.getAllElements()) {
             if (element.tagName().equals("small")) {
                 verseNumber = element.text();
+
+                if (!verseNumber.isEmpty()) {
+                    String[] parts = verseNumber.split(":");
+                    String part = verseNumber;
+                    if (parts.length == 2) {
+                        sb.replace(0,part.length(),parts[0]+"장 "+parts[1]+"절");
+                    }
+                    log.info("정보 : "+sb);
+                   verseNumber = ""; // 구절 번호를 초기화합니다.
+                }
+
             } else if (element.tagName().equals("br")) {
                 // 줄바꿈을 나타내므로 무시
             } else {
