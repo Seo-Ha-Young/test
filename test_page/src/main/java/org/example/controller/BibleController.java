@@ -19,9 +19,11 @@ import org.springframework.web.client.RestTemplate;
 public class BibleController {
 
     public String displayBibleUrl(String bookName) {
+        log.info("bookname = "+bookName);
         // 입력된 책 이름을 통해 URL을 가져옵니다.
         String bibleUrl = BibleBookMapper.getBibleUrl(bookName);
 
+        log.info("bibleurl : "+bibleUrl);
         if (!bibleUrl.isEmpty()) {
             System.out.println("해당 성경 구절의 URL: " + bibleUrl);
         } else {
@@ -38,8 +40,11 @@ public class BibleController {
 
     @PostMapping("/")
     public String getBibleVerse(@RequestParam("query") String query, Model model) {
+        String[] name = query.split(" ");
+        String name2 = name[0];
+        log.info("name2 : "+name2);
         log.info("query:"+query);
-        log.info("url:"+displayBibleUrl(query.substring(0,2)));
+        log.info("url:"+displayBibleUrl(name2));
         String result = fetchBibleVerse(query);
         log.info("result:"+result);
         model.addAttribute("result", result);
@@ -48,9 +53,16 @@ public class BibleController {
     }
 
     private String fetchBibleVerse(String query) {
-        String baseUrl = displayBibleUrl(query.substring(0,2));
 
-            query = query.substring(2); // '마 ' 제거
+        String[] name = query.split(" "); //'각 권 명칭' "장 : 절" 분리
+        String name2 = name[0]; // 권 명칭 사용
+
+        String baseUrl = displayBibleUrl(name2);
+
+        query = name[1]; // 분리한 뒷부분 사용
+
+        log.info("baseUrl? = "+baseUrl);
+        log.info("query? = " + query);
 
             String url;
             if (query.contains(":")) {
