@@ -1,25 +1,17 @@
 package org.example.controller;
 
-import org.example.service.BibleService;
+import org.example.service.BibleFindService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class WritingController {
 
-    private final BibleService bibleService;
+    private final BibleFindService bibleFindService;
 
     @Autowired
-    public WritingController(BibleService bibleService) {
-        this.bibleService = bibleService;
+    public WritingController(BibleFindService bibleFindService) {
+        this.bibleFindService = bibleFindService;
     }
 
-    @GetMapping("/writingPage")
-    public String showWritingPage(Model model) {
-        String apiResponse = bibleService.getApiResponse();
-        model.addAttribute("apiResponse", apiResponse);
-        return "writingPage";
-    }
 }
