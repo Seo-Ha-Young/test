@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,7 +12,8 @@ import org.springframework.web.client.RestTemplate;
 @Log4j2
 public class BibleFindService {
 
-    public static FindMaxVerseService findMaxVerseService;
+    @Autowired
+    public FindMaxVerseService findMaxVerseService;
 
     public String displayBibleUrl(String bookName) {
         log.info("bookname = "+bookName);
@@ -31,8 +33,12 @@ public class BibleFindService {
     //구절 검색
     public String fetchBibleVerse(String query) {
 
+        log.info("query =="+query);
+
         String[] name = query.split(" "); //'각 권 명칭' "장 : 절" 분리
         String name2 = name[0]; // 권 명칭 사용
+
+        log.info("구절검색 전체문구 = "+query + "나누어진 문구 = "+name);
 
         String baseUrl = displayBibleUrl(name2);
 
