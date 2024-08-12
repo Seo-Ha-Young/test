@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Log4j2
 public class FindMaxVerseService {
-    public int FindMaxVerse(String[] args) {
-        String baseUrl = "https://ibibles.net/quote.php?kor-Rev/";
-        int chapter = 1; // 원하는 장 번호 입력
+    public int FindMaxVerse(String baseUrl, String a) {
+        String chapter = a; // 원하는 장 번호 입력
         int verse = 1; // 초깃값은 1절부터
         boolean found = true;
 
